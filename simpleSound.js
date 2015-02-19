@@ -77,7 +77,7 @@ var simpleSound = new function() {
 			return;
 
 		var clone = document.getElementById(simpleSound.tagList[url]).cloneNode(true);
-		clone.id=clone.id+'_clone_'+Math.floor(Math.random()*1000);
+		clone.id="simpleSound_clone_"+simpleSound.tagID++;
 		document.body.appendChild(clone);
 		setTimeout(function(){
 			document.getElementById(clone.id).play();
