@@ -18,6 +18,12 @@ var simpleSound = new function() {
 		    	simpleSound.contextAPI.decodeAudioData(req.response, function(buffer) {
 				simpleSound.APIbuffers[url] = buffer;
 				simpleSound.APIinitQueue.push(url);
+				for (i = 0; i < simpleSound.APIplayQueue.length; i++) {
+		            if(simpleSound.APIplayQueue[i]!=url)
+		            	continue;
+		            simpleSound.play(url);
+		            simpleSound.APIplayQueue.splice(i--,1);
+		        }
 			}, function(e) {
 				console.log("[simpleSound] Error on file load: "+e);
 			});
@@ -27,7 +33,10 @@ var simpleSound = new function() {
 
 	this.playAPI=function(url) {
 		if(simpleSound.APIbuffers[url] === undefined)
+		{
+			simpleSound.APIplayQueue.push(url);
 			return;
+		}
 
 		var source = simpleSound.contextAPI.createBufferSource();
 		source.buffer = simpleSound.APIbuffers[url];
@@ -57,7 +66,7 @@ var simpleSound = new function() {
 			else
 				source.start();
 
-            lowLag.APIinitQueue.splice(i--,1);
+            simpleSound.APIinitQueue.splice(i--,1);
         }
 	}
 
