@@ -1,4 +1,15 @@
 var simpleSound = new function() {
+	
+	this.debug=false; //toggle debug messages on or off
+
+	this.tagCheckInterval=100; //time between cloned audio tag status checks
+
+	this.printmsg=function(msg)
+	{
+		if(this.debug==false)
+			return;
+		console.log("[simpleSound] "+msg);
+	}
 
 	this.extension = "";
 	this.contextAPI = undefined;
@@ -13,11 +24,13 @@ var simpleSound = new function() {
 		var req = new XMLHttpRequest();
 		req.open('GET', url + this.extension, true);
 		req.responseType = 'arraybuffer';
+		simpleSound.printmsg("Attempting to load: "+url);
 
 		req.onload = function() {
 		    	simpleSound.contextAPI.decodeAudioData(req.response, function(buffer) {
 				simpleSound.APIbuffers[url] = buffer;
 				simpleSound.APIinitQueue.push(url);
+				simpleSound.printmsg("Finished loading: "+url);
 				for (i = 0; i < simpleSound.APIplayQueue.length; i++) {
 		            if(simpleSound.APIplayQueue[i]!=url)
 		            	continue;
@@ -25,7 +38,7 @@ var simpleSound = new function() {
 		            simpleSound.APIplayQueue.splice(i--,1);
 		        }
 			}, function(e) {
-				console.log("[simpleSound] Error on file load: "+e);
+				simpleSound.printmsg("Error on file load: "+e);
 			});
 		}
 		req.send();
@@ -37,7 +50,7 @@ var simpleSound = new function() {
 			simpleSound.APIplayQueue.push(url);
 			return;
 		}
-
+		simpleSound.printmsg("Now playing: "+url);
 		var source = simpleSound.contextAPI.createBufferSource();
 		source.buffer = simpleSound.APIbuffers[url];
 		source.connect(simpleSound.contextAPI.destination);
@@ -79,6 +92,17 @@ var simpleSound = new function() {
 			tag += '  <source src="'+url+'.mp3" type="audio/mpeg" />';
 			tag += '</audio>';
 		document.body.innerHTML += tag;
+		simpleSound.printmsg('Added tag #'+id+' for sound '+url);
+	}
+
+	this.checkTag=function(clone) {
+		if(!clone.paused) {
+			setTimeout(function(){simpleSound.checkTag(clone);},simpleSound.tagCheckInterval);
+		}
+		else {
+			document.body.removeChild(document.getElementById(clone.id));
+			delete clone;
+		}
 	}
 
 	this.playTag=function(url) {
@@ -90,22 +114,21 @@ var simpleSound = new function() {
 		document.body.appendChild(clone);
 		setTimeout(function(){
 			document.getElementById(clone.id).play();
-			setTimeout(function(){
-				document.body.removeChild(document.getElementById(clone.id));
-					delete clone;
-				},clone.duration*1000);
+			setTimeout(function(){simpleSound.checkTag(clone);},simpleSound.tagCheckInterval);
 		},10);
 	}
 
-	if(typeof(AudioContext) !== "undefined") {
+	if(typeof(AudioContext) !== "undefined" || typeof(window.webkitAudioContext) !== "undefined") {
 		this.load= this.loadAPI;
 		this.play = this.playAPI;
-		this.contextAPI = new AudioContext();
+		this.contextAPI = new (window.AudioContext || window.webkitAudioContext)();
         document.addEventListener('touchstart',function(){simpleSound.initAPI();});
+        this.printmsg("Using Web Audio API for playback");
 	}
 	else {
 		this.load= this.loadTag;
 		this.play = this.playTag;
+		this.printmsg("Using <audio> tag for playback");
 	}
 
 	var a = document.createElement('audio');
@@ -114,4 +137,6 @@ var simpleSound = new function() {
 	else
 		this.extension=".ogg";
 	delete a;
+
+	this.printmsg("Extension is: "+this.extension);
 }
