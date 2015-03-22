@@ -12,6 +12,14 @@ It also overcomes the arbitrary requirement of iOS WebKit, which [only allows so
 
 It does not utilize jQuery or any other third party plugins, this is a simple standalone script.
 
+## Install
+
+Via Bower
+
+``` bash
+$ bower install simplesound-js --save
+```
+
 ## Usage
 
 You will need to have both `.ogg` and `.mp3` versions of every sound file, in the same folder.
