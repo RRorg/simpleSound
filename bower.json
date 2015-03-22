@@ -1,4 +1,16 @@
 {
   "name": "simplesound-js",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "main": "simpleSound.js",
+  "license": "MIT",
+  "ignore": [
+    "CONTRIBUTING.md"
+  ],
+  "authors": [
+    {"name": "René Roth"}
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/RRorg/simpleSound.git"
+  }
 }
