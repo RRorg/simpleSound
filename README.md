@@ -1,5 +1,7 @@
 # simpleSound
 
+[![Latest Version](https://img.shields.io/github/release/RRorg/simpleSound.svg?style=flat-square)](https://github.com/RRorg/simpleSound/releases)
+[![Bower](https://img.shields.io/bower/v/simplesound-js.svg?style=flat-square)](https://github.com/RRorg/simpleSound#install)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 Hassle-free cross-plattform JavaScript audio preloading and playback.
@@ -25,6 +27,10 @@ $ bower install simplesound-js --save
 You will need to have both `.ogg` and `.mp3` versions of every sound file, in the same folder.
 
 Then just call `simpleSound.load('filename_without_extension')` to preload the sound and `simpleSound.play('filename_without_extension')` to play the sound. It's that easy!
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
 
